@@ -1,159 +1,127 @@
-'use strict';
+// Initialize AOS (Animate On Scroll)
+AOS.init({
+  duration: 1000,
+  once: true,
+  offset: 100,
+});
 
+// Typing animation for the hero section
+const typingText = document.querySelector(".typing-text");
+const text = "Web3 Developer & Blockchain Engineer";
+let charIndex = 0;
 
-
-// element toggle function
-const elementToggleFunc = function (elem) { elem.classList.toggle("active"); }
-
-
-
-// sidebar variables
-const sidebar = document.querySelector("[data-sidebar]");
-const sidebarBtn = document.querySelector("[data-sidebar-btn]");
-
-// sidebar toggle functionality for mobile
-sidebarBtn.addEventListener("click", function () { elementToggleFunc(sidebar); });
-
-
-
-// testimonials variables
-const testimonialsItem = document.querySelectorAll("[data-testimonials-item]");
-const modalContainer = document.querySelector("[data-modal-container]");
-const modalCloseBtn = document.querySelector("[data-modal-close-btn]");
-const overlay = document.querySelector("[data-overlay]");
-
-// modal variable
-const modalImg = document.querySelector("[data-modal-img]");
-const modalTitle = document.querySelector("[data-modal-title]");
-const modalText = document.querySelector("[data-modal-text]");
-
-// modal toggle function
-const testimonialsModalFunc = function () {
-  modalContainer.classList.toggle("active");
-  overlay.classList.toggle("active");
-}
-
-// add click event to all modal items
-for (let i = 0; i < testimonialsItem.length; i++) {
-
-  testimonialsItem[i].addEventListener("click", function () {
-
-    modalImg.src = this.querySelector("[data-testimonials-avatar]").src;
-    modalImg.alt = this.querySelector("[data-testimonials-avatar]").alt;
-    modalTitle.innerHTML = this.querySelector("[data-testimonials-title]").innerHTML;
-    modalText.innerHTML = this.querySelector("[data-testimonials-text]").innerHTML;
-
-    testimonialsModalFunc();
-
-  });
-
-}
-
-// add click event to modal close button
-modalCloseBtn.addEventListener("click", testimonialsModalFunc);
-overlay.addEventListener("click", testimonialsModalFunc);
-
-
-
-// custom select variables
-const select = document.querySelector("[data-select]");
-const selectItems = document.querySelectorAll("[data-select-item]");
-const selectValue = document.querySelector("[data-selecct-value]");
-const filterBtn = document.querySelectorAll("[data-filter-btn]");
-
-select.addEventListener("click", function () { elementToggleFunc(this); });
-
-// add event in all select items
-for (let i = 0; i < selectItems.length; i++) {
-  selectItems[i].addEventListener("click", function () {
-
-    let selectedValue = this.innerText.toLowerCase();
-    selectValue.innerText = this.innerText;
-    elementToggleFunc(select);
-    filterFunc(selectedValue);
-
-  });
-}
-
-// filter variables
-const filterItems = document.querySelectorAll("[data-filter-item]");
-
-const filterFunc = function (selectedValue) {
-
-  for (let i = 0; i < filterItems.length; i++) {
-
-    if (selectedValue === "all") {
-      filterItems[i].classList.add("active");
-    } else if (selectedValue === filterItems[i].dataset.category) {
-      filterItems[i].classList.add("active");
-    } else {
-      filterItems[i].classList.remove("active");
-    }
-
+function typeText() {
+  if (charIndex < text.length) {
+    typingText.textContent += text.charAt(charIndex);
+    charIndex++;
+    setTimeout(typeText, 100);
   }
-
 }
 
-// add event in all filter button items for large screen
-let lastClickedBtn = filterBtn[0];
+// Start typing animation when page loads
+window.addEventListener("load", () => {
+  typingText.textContent = "";
+  typeText();
+});
 
-for (let i = 0; i < filterBtn.length; i++) {
+// Smooth scrolling for navigation links
+document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+  anchor.addEventListener("click", function (e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute("href")).scrollIntoView({
+      behavior: "smooth",
+    });
+  });
+});
 
-  filterBtn[i].addEventListener("click", function () {
+// Parallax effect for the gradient sphere
+document.addEventListener("mousemove", (e) => {
+  const sphere = document.querySelector(".gradient-sphere");
+  const x = e.clientX / window.innerWidth;
+  const y = e.clientY / window.innerHeight;
 
-    let selectedValue = this.innerText.toLowerCase();
-    selectValue.innerText = this.innerText;
-    filterFunc(selectedValue);
+  sphere.style.transform = `translate(${x * 50}px, ${y * 50}px)`;
+});
 
-    lastClickedBtn.classList.remove("active");
-    this.classList.add("active");
-    lastClickedBtn = this;
+// Navbar background change on scroll
+const navbar = document.querySelector(".navbar");
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 50) {
+    navbar.style.background = "rgba(10, 11, 14, 0.95)";
+  } else {
+    navbar.style.background = "rgba(10, 11, 14, 0.8)";
+  }
+});
 
+// Add hover effect to project cards
+document.querySelectorAll(".project-card").forEach((card) => {
+  card.addEventListener("mouseenter", () => {
+    card.style.transform = "translateY(-10px)";
   });
 
+  card.addEventListener("mouseleave", () => {
+    card.style.transform = "translateY(0)";
+  });
+});
+
+// Add particle effect to the hero section
+function createParticle() {
+  const particle = document.createElement("div");
+  particle.className = "particle";
+
+  // Random position
+  const x = Math.random() * window.innerWidth;
+  const y = Math.random() * window.innerHeight;
+
+  // Random size
+  const size = Math.random() * 3 + 1;
+
+  // Random opacity
+  const opacity = Math.random() * 0.5 + 0.1;
+
+  // Set styles
+  particle.style.cssText = `
+        position: absolute;
+        left: ${x}px;
+        top: ${y}px;
+        width: ${size}px;
+        height: ${size}px;
+        background: var(--accent-color);
+        border-radius: 50%;
+        opacity: ${opacity};
+        pointer-events: none;
+    `;
+
+  document.querySelector(".hero").appendChild(particle);
+
+  // Remove particle after animation
+  setTimeout(() => {
+    particle.remove();
+  }, 3000);
 }
 
+// Create particles periodically
+setInterval(createParticle, 200);
 
-
-// contact form variables
-const form = document.querySelector("[data-form]");
-const formInputs = document.querySelectorAll("[data-form-input]");
-const formBtn = document.querySelector("[data-form-btn]");
-
-// add event to all form input field
-for (let i = 0; i < formInputs.length; i++) {
-  formInputs[i].addEventListener("input", function () {
-
-    // check form validation
-    if (form.checkValidity()) {
-      formBtn.removeAttribute("disabled");
-    } else {
-      formBtn.setAttribute("disabled", "");
+// Add this CSS to your style.css file
+const style = document.createElement("style");
+style.textContent = `
+    .particle {
+        animation: float 3s ease-in-out infinite;
     }
-
-  });
-}
-
-
-
-// page navigation variables
-const navigationLinks = document.querySelectorAll("[data-nav-link]");
-const pages = document.querySelectorAll("[data-page]");
-
-// add event to all nav link
-for (let i = 0; i < navigationLinks.length; i++) {
-  navigationLinks[i].addEventListener("click", function () {
-
-    for (let i = 0; i < pages.length; i++) {
-      if (this.innerHTML.toLowerCase() === pages[i].dataset.page) {
-        pages[i].classList.add("active");
-        navigationLinks[i].classList.add("active");
-        window.scrollTo(0, 0);
-      } else {
-        pages[i].classList.remove("active");
-        navigationLinks[i].classList.remove("active");
-      }
+    
+    @keyframes float {
+        0% {
+            transform: translateY(0) scale(1);
+            opacity: 0;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-100px) scale(0);
+            opacity: 0;
+        }
     }
-
-  });
-}
+`;
+document.head.appendChild(style);
